@@ -45,7 +45,7 @@ def transform(data):
 def start(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
         text=f"""
-Hey! To download a book use\n`/{book}` followed by the name of the book.\n
+Hey! To download a book use\n`/{book}` followed by the name of the book.
 To know more about the bot use `/{about}`.
 To show this dialogue use `/{help}`.
 """)
@@ -119,7 +119,7 @@ def book_callback(update, context):
 def about(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
         text=f"""
-This is a bot made by scraping the site libgen.rs\n
+This is a bot made by scraping the site libgen.rs
 For any queries or support contact @bhaskar_mahto       
 """)
 
@@ -132,10 +132,10 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Start handler
-    dispatcher.add_handler(CommandHandler("start", start, run_async=True))
+    dispatcher.add_handler(CommandHandler("start", start, run_async=True, parse_mode="Markdown"))
 
     # Book handler 
-    dispatcher.add_handler(CommandHandler("book", book, run_async=True))
+    dispatcher.add_handler(CommandHandler("book", book, run_async=True, parse_mode="Markdown"))
     # Conversation handler
     dispatcher.add_handler(ConversationHandler(
         entry_points=[CommandHandler("book", book, run_async=True)],
@@ -147,11 +147,11 @@ def main() -> None:
 
     # CallbackQueryHandler for the book_callback
     dispatcher.add_handler(CallbackQueryHandler(
-        book_callback, pattern="^book#", run_async=True))
+        book_callback, pattern="^book#", run_async=True, parse_mode="Markdown"))
     # About 
-    dispatcher.add_handler(CommandHandler("about", about, run_async=True))
+    dispatcher.add_handler(CommandHandler("about", about, run_async=True, parse_mode="Markdown"))
     # Help
-    dispatcher.add_handler(CommandHandler("help", start, run_async=True))
+    dispatcher.add_handler(CommandHandler("help", start, run_async=True, parse_mode="Markdown"))
 
     # everything goes above this
     # start/end bot
