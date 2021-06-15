@@ -2,6 +2,8 @@ import os, logging
 from typing import Text
 from requests.models import parse_header_links
 from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler
+from telegram import InlineKeyboardButton
+from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 from libgen import libgen, dlLinkGrabber
 from telegram_bot_pagination import InlineKeyboardPaginator
 # loading environment variables
@@ -18,12 +20,13 @@ def transform(data):
     BOOKS = []
     for item in data:
         link = item['link']
-        # link = dlLinkGrabber(link)
+        link = dlLinkGrabber(link)
+        text = "Link"
         t = f"""
 *Title*     : `{item['title']}`
 *Author*    : `{item['author']}`
 *Language*  : `{item['lang']}`
-*Link*      : `{link}`
+*Download*  :  [{text}]({link})
 """
         BOOKS.append(t)
 
@@ -40,7 +43,6 @@ def book(update, context):
     data = libgen(bookName)
     if len(data) > 0:
         transform(data)
-
         paginator = InlineKeyboardPaginator(
             len(data),
             data_pattern='book#{page}'
@@ -52,7 +54,7 @@ def book(update, context):
             reply_markup=paginator.markup,
             parse_mode="Markdown",
         )
-
+# callback funtion: required for pagination
 def book_callback(update, context):
     global BOOKS
     query = update.callback_query   
@@ -85,7 +87,7 @@ def main() -> None:
     # CallbackQueryHandler for the book_callback
     dispatcher.add_handler(CallbackQueryHandler(
         book_callback, pattern="^book#", run_async=True))
-    
+
 
     # everything goes above this
     # start/end bot
