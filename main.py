@@ -45,9 +45,9 @@ def transform(data):
 def start(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
         text=f"""
-Hey! To download a book use\n`/{book}` followed by the name of the book.
-To know more about the bot use `/{about}`.
-To show this dialogue use `/{help}`.""",
+Hey! To download a book use\n`/book` followed by the name of the book.
+To know more about the bot use `/about`.
+To show this dialogue use `/help`.""",
         parse_mode="Markdown")
 
 # book function: gets the name of the book and pass it to the scraper
@@ -55,12 +55,12 @@ def book(update, context):
     global BOOKS
     bookName = " ".join(context.args)
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
-    data = libgen(bookName)
-    if len(data) < 1:
+    if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
             reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
+        data = libgen(bookName)
         transform(data)
         paginator = InlineKeyboardPaginator(
             len(data),
