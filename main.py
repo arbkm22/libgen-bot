@@ -47,8 +47,8 @@ def start(update, context):
         text=f"""
 Hey! To download a book use\n`/{book}` followed by the name of the book.
 To know more about the bot use `/{about}`.
-To show this dialogue use `/{help}`.
-""")
+To show this dialogue use `/{help}`.""",
+        parse_mode="Markdown")
 
 # book function: gets the name of the book and pass it to the scraper
 def book(update, context):
@@ -120,8 +120,8 @@ def about(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
         text=f"""
 This is a bot made by scraping the site libgen.rs
-For any queries or support contact @bhaskar_mahto       
-""")
+For any queries or support contact @bhaskar_mahto""",
+        parse_mode="Markdown")
 
 def cancel(update, context):
     update.message.reply_text("Task cancelled.")
@@ -132,10 +132,10 @@ def main() -> None:
     dispatcher = updater.dispatcher
 
     # Start handler
-    dispatcher.add_handler(CommandHandler("start", start, run_async=True, parse_mode="Markdown"))
+    dispatcher.add_handler(CommandHandler("start", start, run_async=True))
 
     # Book handler 
-    dispatcher.add_handler(CommandHandler("book", book, run_async=True, parse_mode="Markdown"))
+    dispatcher.add_handler(CommandHandler("book", book, run_async=True))
     # Conversation handler
     dispatcher.add_handler(ConversationHandler(
         entry_points=[CommandHandler("book", book, run_async=True)],
@@ -147,11 +147,11 @@ def main() -> None:
 
     # CallbackQueryHandler for the book_callback
     dispatcher.add_handler(CallbackQueryHandler(
-        book_callback, pattern="^book#", run_async=True, parse_mode="Markdown"))
+        book_callback, pattern="^book#", run_async=True))
     # About 
-    dispatcher.add_handler(CommandHandler("about", about, run_async=True, parse_mode="Markdown"))
+    dispatcher.add_handler(CommandHandler("about", about, run_async=True))
     # Help
-    dispatcher.add_handler(CommandHandler("help", start, run_async=True, parse_mode="Markdown"))
+    dispatcher.add_handler(CommandHandler("help", start, run_async=True))
 
     # everything goes above this
     # start/end bot
