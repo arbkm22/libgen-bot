@@ -2,7 +2,11 @@ import os, logging
 from typing import Text
 from requests.models import parse_header_links
 from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler
-from telegram import InlineKeyboardButton
+from telegram import InlineKeyboardButton, replymarkup, ForceReply
+from telegram.ext.filters import Filters
+from telegram.ext.conversationhandler import ConversationHandler
+from telegram.ext.messagehandler import MessageHandler
+from telegram.forcereply import ForceReply
 from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 from libgen import libgen, dlLinkGrabber
 from telegram_bot_pagination import InlineKeyboardPaginator
@@ -39,15 +43,24 @@ def transform(data):
     
 # Start function: when the bot starts
 def start(update, context):
-    context.bot.sendMessage(chat_id=update.effective_chat.id, text="Started")
+    context.bot.sendMessage(chat_id=update.effective_chat.id,
+        text=f"""
+Hey! To download a book use\n`/{book}` followed by the name of the book.\n
+To know more about the bot use `/{about}`.
+To show this dialogue use `/{help}`.
+""")
 
-# book function: gets the name of the book and pass it to the api
+# book function: gets the name of the book and pass it to the scraper
 def book(update, context):
     global BOOKS
     bookName = " ".join(context.args)
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     data = libgen(bookName)
-    if len(data) > 0:
+    if len(data) < 1:
+        update.message.reply_text("Enter the name of the book: ",
+            reply_markup=ForceReply(force_reply=True, selective=True))
+        return 0
+    else:
         transform(data)
         paginator = InlineKeyboardPaginator(
             len(data),
@@ -60,6 +73,30 @@ def book(update, context):
             reply_markup=paginator.markup,
             parse_mode="Markdown",
         )
+
+# Conversation handler for the above function
+def book_conv(update, context):
+    global BOOKS
+    bookName = update.message.text
+    if len(bookName) < 1:
+        update.message.reply_text("Enter the name of the book: ",
+            reply_markup=ForceReply(force_reply=True, selective=True))
+        return 0
+    else:
+        data = libgen(bookName)
+        transform(data)
+        paginator = InlineKeyboardPaginator(
+            len(data),
+            data_pattern='book#{page}'
+        )
+
+        message = context.bot.sendMessage(
+            chat_id=update.message.chat_id,
+            text=BOOKS[0],
+            reply_markup=paginator.markup,
+            parse_mode="Markdown",
+        )
+
 # callback funtion: required for pagination
 def book_callback(update, context):
     global BOOKS
@@ -79,6 +116,16 @@ def book_callback(update, context):
         parse_mode="Markdown"
     )
 
+def about(update, context):
+    context.bot.sendMessage(chat_id=update.effective_chat.id,
+        text=f"""
+This is a bot made by scraping the site libgen.rs\n
+For any queries or support contact @bhaskar_mahto       
+""")
+
+def cancel(update, context):
+    update.message.reply_text("Task cancelled.")
+    return ConversationHandler.END
 
 def main() -> None:
     updater = Updater(token=TOKEN, use_context=True)
@@ -87,13 +134,24 @@ def main() -> None:
     # Start handler
     dispatcher.add_handler(CommandHandler("start", start, run_async=True))
 
-    # Book handler (gets the name of the book)
+    # Book handler 
     dispatcher.add_handler(CommandHandler("book", book, run_async=True))
+    # Conversation handler
+    dispatcher.add_handler(ConversationHandler(
+        entry_points=[CommandHandler("book", book, run_async=True)],
+        states={
+            0: [MessageHandler(Filters.text & ~Filters.command, book_conv)]
+        },
+        fallbacks=[CommandHandler("cancel", cancel, run_async=True)]
+    ))
 
     # CallbackQueryHandler for the book_callback
     dispatcher.add_handler(CallbackQueryHandler(
         book_callback, pattern="^book#", run_async=True))
-
+    # About 
+    dispatcher.add_handler(CommandHandler("about", about, run_async=True))
+    # Help
+    dispatcher.add_handler(CommandHandler("help", start, run_async=True))
 
     # everything goes above this
     # start/end bot
