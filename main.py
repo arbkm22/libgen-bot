@@ -7,10 +7,13 @@ from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 from libgen import libgen, dlLinkGrabber
 from telegram_bot_pagination import InlineKeyboardPaginator
 # loading environment variables
+# uncomment this if you want to test locally
+# but first make a .env file and save the token there
+""" 
 from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
-
+"""
 # ---GLOBAL VARiABLES---
 BOOKS = []
 
