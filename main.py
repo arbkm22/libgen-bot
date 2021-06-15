@@ -14,6 +14,9 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 """
+# heroku vars
+TOKEN = os.environ.get("TOKEN")
+
 # ---GLOBAL VARiABLES---
 BOOKS = []
 
