@@ -1,4 +1,5 @@
-import os, logging
+import os
+import logging
 from typing import Text
 from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler, ConversationHandler
 from telegram import InlineKeyboardButton, replymarkup, ForceReply, update
@@ -21,7 +22,19 @@ TOKEN = os.environ.get("TOKEN")
 # ---GLOBAL VARiABLES---
 BOOKS = []
 
+
+# -----------------LOGGING-------------
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
+)
+
+logger = logging.getLogger(__name__)
+logger.info(msg="Logging started...")
+
+
 # dictionary to text
+
+
 def transform(data):
     global BOOKS
     BOOKS = []
@@ -37,28 +50,30 @@ def transform(data):
 """
         BOOKS.append(t)
 
-    
+
 # Start function: when the bot starts
 def start(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-        text=f"""
+                            text=f"""
 Hey! To download a book use\n`/book` followed by the name of the book.
 To know more about the bot use `/about`.
 To show this dialogue use `/help`.""",
-        parse_mode="Markdown")
+                            parse_mode="Markdown")
 
 # book function: gets the name of the book and pass it to the scraper
+
+
 def book(update, context):
     global BOOKS
     bookName = " ".join(context.args)
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
-            reply_markup=ForceReply(force_reply=True, selective=True))
+                                  reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-            text="Searching books in database, please wait...")
+                                text="Searching books in database, please wait...")
         data = libgen(bookName)
         if len(data) > 0:
             transform(data)
@@ -75,19 +90,21 @@ def book(update, context):
             )
         else:
             context.bot.sendMessage(chat_id=update.effective_chat.id,
-                text="No book found.")
-
+                                    text="No book found.")
+        return ConversationHandler.END
 # Conversation handler for the above function
+
+
 def book_conv(update, context):
     global BOOKS
     bookName = update.message.text
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
-            reply_markup=ForceReply(force_reply=True, selective=True))
+                                  reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-            text="Searching books in database, please wait...")
+                                text="Searching books in database, please wait...")
         data = libgen(bookName)
         if len(data) > 0:
             transform(data)
@@ -104,12 +121,14 @@ def book_conv(update, context):
             )
         else:
             context.bot.sendMessage(chat_id=update.effective_chat.id,
-                text="No book found.")
-
+                                    text="No book found.")
+        return ConversationHandler.END
 # callback funtion: required for pagination
+
+
 def book_callback(update, context):
     global BOOKS
-    query = update.callback_query   
+    query = update.callback_query
     query.answer("loading")
     page = int(query.data.split('#')[1])
 
@@ -125,18 +144,22 @@ def book_callback(update, context):
         parse_mode="Markdown"
     )
 
+
 def about(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-        text=f"""This is a bot made by scraping the site libgen.rs
+                            text=f"""This is a bot made by scraping the site libgen.rs
 For any queries or support contact @bhaskar_mahto""")
+
 
 def cancel(update, context):
     update.message.reply_text("Task cancelled.")
     return ConversationHandler.END
 
+
 def unknown(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-        text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""")
+                            text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""", parse_mode="Markdown")
+
 
 def main() -> None:
     updater = Updater(token=TOKEN, use_context=True)
@@ -157,7 +180,7 @@ def main() -> None:
     # CallbackQueryHandler for the book_callback
     dispatcher.add_handler(CallbackQueryHandler(
         book_callback, pattern="^book#", run_async=True))
-    # About 
+    # About
     dispatcher.add_handler(CommandHandler("about", about, run_async=True))
     # Help
     dispatcher.add_handler(CommandHandler("help", start, run_async=True))
@@ -166,14 +189,15 @@ def main() -> None:
     # everything goes above this
     # start/end bot
     # ------ System Polling ------
-    # updater.start_polling()
+    updater.start_polling()
     # ------ Heroku Webhook ------
     PORT = int(os.environ.get("PORT", 5000))
-    URL = "https://libgen-book-bot.herokuapp.com"
+    URL = "https://libgen-book-bot.herokuapp.com/"
     updater.start_webhook(listen="0.0.0.0",
                           port=int(PORT),
                           url_path=TOKEN, webhook_url=URL+TOKEN)
     updater.idle()
+
 
 if __name__ == '__main__':
     main()
