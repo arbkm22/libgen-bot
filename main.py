@@ -158,7 +158,8 @@ def cancel(update, context):
 
 def unknown(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-                            text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""", parse_mode="Markdown")
+                            text=f"""Sorry, I didn't understand that.\nType `\help` for more info.""",
+                            parse_mode="Markdown")
 
 
 def main() -> None:
