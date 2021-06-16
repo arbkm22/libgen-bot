@@ -133,9 +133,9 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("book", book, run_async=True))
     # Conversation handler
     dispatcher.add_handler(ConversationHandler(
-        entry_points=[CommandHandler("book", book, run_async=True)],
+        entry_points=[CommandHandler("book", book_conv, run_async=True)],
         states={
-            0: [MessageHandler(Filters.text & ~Filters.command, book_conv)]
+            0: [MessageHandler(Filters.text & ~Filters.command, book)]
         },
         fallbacks=[CommandHandler("cancel", cancel, run_async=True)]
     ))
