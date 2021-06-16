@@ -57,19 +57,25 @@ def book(update, context):
             reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
+        context.bot.sendMessage(chat_id=update.effective_chat.id,
+            text="Searching books in database, please wait...")
         data = libgen(bookName)
-        transform(data)
-        paginator = InlineKeyboardPaginator(
-            len(data),
-            data_pattern='book#{page}'
-        )
+        if len(data) > 0:
+            transform(data)
+            paginator = InlineKeyboardPaginator(
+                len(data),
+                data_pattern='book#{page}'
+            )
 
-        message = context.bot.sendMessage(
-            chat_id=update.message.chat_id,
-            text=BOOKS[0],
-            reply_markup=paginator.markup,
-            parse_mode="Markdown",
-        )
+            message = context.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text=BOOKS[0],
+                reply_markup=paginator.markup,
+                parse_mode="Markdown",
+            )
+        else:
+            context.bot.sendMessage(chat_id=update.effective_chat.id,
+                text="No book found.")
 
 # Conversation handler for the above function
 def book_conv(update, context):
@@ -80,19 +86,25 @@ def book_conv(update, context):
             reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
+        context.bot.sendMessage(chat_id=update.effective_chat.id,
+            text="Searching books in database, please wait...")
         data = libgen(bookName)
-        transform(data)
-        paginator = InlineKeyboardPaginator(
-            len(data),
-            data_pattern='book#{page}'
-        )
+        if len(data) > 0:
+            transform(data)
+            paginator = InlineKeyboardPaginator(
+                len(data),
+                data_pattern='book#{page}'
+            )
 
-        message = context.bot.sendMessage(
-            chat_id=update.message.chat_id,
-            text=BOOKS[0],
-            reply_markup=paginator.markup,
-            parse_mode="Markdown",
-        )
+            message = context.bot.sendMessage(
+                chat_id=update.message.chat_id,
+                text=BOOKS[0],
+                reply_markup=paginator.markup,
+                parse_mode="Markdown",
+            )
+        else:
+            context.bot.sendMessage(chat_id=update.effective_chat.id,
+                text="No book found.")
 
 # callback funtion: required for pagination
 def book_callback(update, context):
