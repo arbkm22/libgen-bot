@@ -136,7 +136,8 @@ def cancel(update, context):
 
 def unknown(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-        text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""")
+        text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""",
+        parse_mode="Markdown")
 
 def main() -> None:
     updater = Updater(token=TOKEN, use_context=True)
@@ -171,7 +172,7 @@ def main() -> None:
     PORT = int(os.environ.get("PORT", 5000))
     URL = "https://libgen-book-bot.herokuapp.com"
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
+                          port=PORT,
                           url_path=TOKEN, webhook_url=URL+TOKEN)
     updater.idle()
 
