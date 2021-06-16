@@ -1,12 +1,9 @@
 import os, logging
 from typing import Text
-from requests.models import parse_header_links
-from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler
+from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler, ConversationHandler
 from telegram import InlineKeyboardButton, replymarkup, ForceReply
 from telegram.ext.filters import Filters
-from telegram.ext.conversationhandler import ConversationHandler
 from telegram.ext.messagehandler import MessageHandler
-from telegram.forcereply import ForceReply
 from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
 from libgen import libgen, dlLinkGrabber
 from telegram_bot_pagination import InlineKeyboardPaginator
