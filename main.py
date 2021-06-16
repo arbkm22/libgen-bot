@@ -194,7 +194,7 @@ def main() -> None:
     PORT = int(os.environ.get("PORT", 5000))
     URL = "https://libgen-book-bot.herokuapp.com/"
     updater.start_webhook(listen="0.0.0.0",
-                          port=int(PORT),
+                          port=PORT,
                           url_path=TOKEN, webhook_url=URL+TOKEN)
     updater.idle()
 
