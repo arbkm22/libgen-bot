@@ -115,10 +115,8 @@ def book_callback(update, context):
 
 def about(update, context):
     context.bot.sendMessage(chat_id=update.effective_chat.id,
-        text=f"""\
-This is a bot made by scraping the site libgen.rs
-For any queries or support contact @bhaskar_mahto""",
-        parse_mode="Markdown")
+        text=f"""This is a bot made by scraping the site libgen.rs
+For any queries or support contact @bhaskar_mahto""")
 
 def cancel(update, context):
     update.message.reply_text("Task cancelled.")
