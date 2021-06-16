@@ -129,13 +129,11 @@ def main() -> None:
     # Start handler
     dispatcher.add_handler(CommandHandler("start", start, run_async=True))
 
-    # Book handler 
-    dispatcher.add_handler(CommandHandler("book", book, run_async=True))
     # Conversation handler
     dispatcher.add_handler(ConversationHandler(
-        entry_points=[CommandHandler("book", book_conv, run_async=True)],
+        entry_points=[CommandHandler("book", book, run_async=True)],
         states={
-            0: [MessageHandler(Filters.text & ~Filters.command, book)]
+            0: [MessageHandler(Filters.text & ~Filters.command, book_conv)]
         },
         fallbacks=[CommandHandler("cancel", cancel, run_async=True)]
     ))
