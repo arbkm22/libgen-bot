@@ -57,6 +57,7 @@ def book(update, context):
             reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
+        print(bookName)
         data = libgen(bookName)
         transform(data)
         paginator = InlineKeyboardPaginator(
@@ -80,6 +81,7 @@ def book_conv(update, context):
             reply_markup=ForceReply(force_reply=True, selective=True))
         return 0
     else:
+        print(bookName)
         data = libgen(bookName)
         transform(data)
         paginator = InlineKeyboardPaginator(
