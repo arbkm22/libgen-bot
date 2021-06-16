@@ -1,7 +1,7 @@
 import os, logging
 from typing import Text
 from telegram.ext import Updater, dispatcher, updater, CommandHandler, CallbackQueryHandler, ConversationHandler
-from telegram import InlineKeyboardButton, replymarkup, ForceReply
+from telegram import InlineKeyboardButton, replymarkup, ForceReply, update
 from telegram.ext.filters import Filters
 from telegram.ext.messagehandler import MessageHandler
 from telegram.inline.inlinekeyboardmarkup import InlineKeyboardMarkup
@@ -134,6 +134,10 @@ def cancel(update, context):
     update.message.reply_text("Task cancelled.")
     return ConversationHandler.END
 
+def unknown(update, context):
+    context.bot.sendMessage(chat_id=update.effective_chat.id,
+        text=f""""Sorry, I didn't understand that.\nType `\help` for more info.""")
+
 def main() -> None:
     updater = Updater(token=TOKEN, use_context=True)
     dispatcher = updater.dispatcher
@@ -145,7 +149,7 @@ def main() -> None:
     dispatcher.add_handler(ConversationHandler(
         entry_points=[CommandHandler("book", book, run_async=True)],
         states={
-            0: [MessageHandler(Filters.text & ~Filters.command, book_conv)]
+            0: [MessageHandler(Filters.text & ~Filters.command, book_conv, run_async=True)]
         },
         fallbacks=[CommandHandler("cancel", cancel, run_async=True)]
     ))
@@ -157,11 +161,18 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("about", about, run_async=True))
     # Help
     dispatcher.add_handler(CommandHandler("help", start, run_async=True))
-
+    # For Unknown Commands
+    dispatcher.add_handler(MessageHandler(Filters.command, unknown))
     # everything goes above this
     # start/end bot
-    updater.start_polling()
-
+    # ------ System Polling ------
+    # updater.start_polling()
+    # ------ Heroku Webhook ------
+    PORT = int(os.environ.get("PORT", 5000))
+    URL = "https://libgen-book-bot.herokuapp.com"
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=TOKEN, webhook_url=URL+TOKEN)
     updater.idle()
 
 if __name__ == '__main__':
