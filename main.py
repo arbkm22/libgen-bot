@@ -189,7 +189,7 @@ def main() -> None:
     # everything goes above this
     # start/end bot
     # ------ System Polling ------
-    updater.start_polling()
+    #updater.start_polling()
     # ------ Heroku Webhook ------
     PORT = int(os.environ.get("PORT", 5000))
     URL = "https://libgen-book-bot.herokuapp.com/"
