@@ -130,6 +130,7 @@ def book_conv(update, context):
 
 
 def book_callback(update, context):
+    global BOOKS
     uuid = str(update.effective_chat.id) + str(update.effective_user.id)
     query = update.callback_query
     query.answer("loading")
