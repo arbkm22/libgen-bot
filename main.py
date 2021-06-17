@@ -19,9 +19,6 @@ TOKEN = os.getenv("TOKEN")
 # heroku vars
 TOKEN = os.environ.get("TOKEN")
 
-# ---GLOBAL VARiABLES---
-BOOKS = []
-
 
 # -----------------LOGGING-------------
 logging.basicConfig(
@@ -36,8 +33,7 @@ logger.info(msg="Logging started...")
 
 
 def transform(data):
-    global BOOKS
-    BOOKS = []
+    tempList = []
     for item in data:
         link = item['link']
         link = dlLinkGrabber(link)
@@ -48,7 +44,8 @@ def transform(data):
 *Language*  : `{item['lang']}`
 *Download*  :  [{text}]({link})
 """
-        BOOKS.append(t)
+        tempList.append(t)
+    return tempList
 
 
 # Start function: when the bot starts
@@ -64,7 +61,7 @@ To show this dialogue use `/help`.""",
 
 
 def book(update, context):
-    global BOOKS
+    BOOKS = {}
     bookName = " ".join(context.args)
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     if len(bookName) < 1:
@@ -73,10 +70,11 @@ def book(update, context):
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-                                text="Searching books in database, please wait...")
+                                text=f"Searching for book `{bookName}` in database, please wait...")
         data = libgen(bookName)
         if len(data) > 0:
-            transform(data)
+            uuid = str(update.effective_chat.id) + str(update.effective_user.id)
+            BOOKS[uuid] = transform(data)
             paginator = InlineKeyboardPaginator(
                 len(data),
                 data_pattern='book#{page}'
@@ -84,7 +82,7 @@ def book(update, context):
 
             message = context.bot.sendMessage(
                 chat_id=update.message.chat_id,
-                text=BOOKS[0],
+                text=BOOKS[uuid][0],
                 reply_markup=paginator.markup,
                 parse_mode="Markdown",
             )
@@ -96,7 +94,7 @@ def book(update, context):
 
 
 def book_conv(update, context):
-    global BOOKS
+    BOOKS = {}
     bookName = update.message.text
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
@@ -104,10 +102,11 @@ def book_conv(update, context):
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-                                text="Searching books in database, please wait...")
+                                text=f"Searching for book `{bookName}` in database, please wait...")
         data = libgen(bookName)
         if len(data) > 0:
-            transform(data)
+            uuid = str(update.effective_chat.id) + str(update.effective_user.id)
+            BOOKS[uuid] = transform(data)
             paginator = InlineKeyboardPaginator(
                 len(data),
                 data_pattern='book#{page}'
@@ -115,7 +114,7 @@ def book_conv(update, context):
 
             message = context.bot.sendMessage(
                 chat_id=update.message.chat_id,
-                text=BOOKS[0],
+                text=BOOKS[uuid][0],
                 reply_markup=paginator.markup,
                 parse_mode="Markdown",
             )
@@ -127,19 +126,20 @@ def book_conv(update, context):
 
 
 def book_callback(update, context):
-    global BOOKS
+    BOOKS = {}
+    uuid = str(update.effective_chat.id) + str(update.effective_user.id)
     query = update.callback_query
     query.answer("loading")
     page = int(query.data.split('#')[1])
 
     paginator = InlineKeyboardPaginator(
-        page_count=len(BOOKS),
+        page_count=len(BOOKS[uuid]),
         current_page=page,
         data_pattern="book#{page}"
     )
 
     query.edit_message_text(
-        text=BOOKS[page - 1],
+        text=BOOKS[uuid][page - 1],
         reply_markup=paginator.markup,
         parse_mode="Markdown"
     )
