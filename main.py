@@ -156,12 +156,6 @@ def cancel(update, context):
     return ConversationHandler.END
 
 
-def unknown(update, context):
-    context.bot.sendMessage(chat_id=update.effective_chat.id,
-                            text=f"""Sorry, I didn't understand that.\nType `\help` for more info.""",
-                            parse_mode="Markdown")
-
-
 def main() -> None:
     updater = Updater(token=TOKEN, use_context=True)
     dispatcher = updater.dispatcher
@@ -185,8 +179,7 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("about", about, run_async=True))
     # Help
     dispatcher.add_handler(CommandHandler("help", start, run_async=True))
-    # For Unknown Commands
-    dispatcher.add_handler(MessageHandler(Filters.command, unknown))
+    
     # everything goes above this
     # start/end bot
     # ------ System Polling ------
