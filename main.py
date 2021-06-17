@@ -63,7 +63,8 @@ To show this dialogue use `/help`.""",
 
 
 def book(update, context):
-    BOOKS = {}
+    # BOOKS = {}
+    global BOOKS
     bookName = " ".join(context.args)
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     if len(bookName) < 1:
@@ -76,7 +77,8 @@ def book(update, context):
                                 parse_mode="Markdown")
         data = libgen(bookName)
         if len(data) > 0:
-            uuid = str(update.effective_chat.id) + str(update.effective_user.id)
+            uuid = str(update.effective_chat.id) + \
+                str(update.effective_user.id)
             BOOKS[uuid] = transform(data)
             paginator = InlineKeyboardPaginator(
                 len(data),
@@ -97,7 +99,7 @@ def book(update, context):
 
 
 def book_conv(update, context):
-    BOOKS = {}
+    global BOOKS
     bookName = update.message.text
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
@@ -109,7 +111,8 @@ def book_conv(update, context):
                                 parse_mode="Markdown")
         data = libgen(bookName)
         if len(data) > 0:
-            uuid = str(update.effective_chat.id) + str(update.effective_user.id)
+            uuid = str(update.effective_chat.id) + \
+                str(update.effective_user.id)
             BOOKS[uuid] = transform(data)
             paginator = InlineKeyboardPaginator(
                 len(data),
@@ -183,11 +186,11 @@ def main() -> None:
     dispatcher.add_handler(CommandHandler("about", about, run_async=True))
     # Help
     dispatcher.add_handler(CommandHandler("help", start, run_async=True))
-    
+
     # everything goes above this
     # start/end bot
     # ------ System Polling ------
-    #updater.start_polling()
+    # updater.start_polling()
     # ------ Heroku Webhook ------
     PORT = int(os.environ.get("PORT", 5000))
     URL = "https://libgen-book-bot.herokuapp.com/"
