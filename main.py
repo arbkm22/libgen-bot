@@ -44,6 +44,8 @@ def transform(data):
 *Title*     : `{item['title']}`
 *Author*    : `{item['author']}`
 *Language*  : `{item['lang']}`
+*Format*    : `{item['ext']}`
+*Size*      : `{item['size']}`
 *Download*  :  [{text}]({link})
 """
         tempList.append(t)
@@ -56,7 +58,8 @@ def start(update, context):
                             text=f"""
 Hey! To download a book use\n`/book` followed by the name of the book.
 To know more about the bot use `/about`.
-To show this dialogue use `/help`.""",
+To show this dialogue use `/help`.
+P.S: To read certain file types, download a book reader i.e., ReadEra, Moon+ Reader""",
                             parse_mode="Markdown")
 
 # book function: gets the name of the book and pass it to the scraper
