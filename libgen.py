@@ -34,7 +34,7 @@ def libgen(bookName):
     fileNameRef = []
     del tableRow[0]
     if (len(tableRow)>1):
-        for tr in range(len(tableRow)):
+        for tr in range(min(10, len(tableRow))):
             tableContent = tableRow[tr].find_all("td")
             bookId = tableContent[0].text
             title = tableContent[2].find("a", id=bookId).text
