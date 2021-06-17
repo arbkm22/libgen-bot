@@ -19,6 +19,8 @@ TOKEN = os.getenv("TOKEN")
 # heroku vars
 TOKEN = os.environ.get("TOKEN")
 
+# ------ Global Variables ------
+BOOKS = {}
 
 # -----------------LOGGING-------------
 logging.basicConfig(
@@ -70,7 +72,8 @@ def book(update, context):
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-                                text=f"Searching for book `{bookName}` in database, please wait...")
+                                text=f"Searching for book `{bookName}` in database, please wait...",
+                                parse_mode="Markdown")
         data = libgen(bookName)
         if len(data) > 0:
             uuid = str(update.effective_chat.id) + str(update.effective_user.id)
@@ -102,7 +105,8 @@ def book_conv(update, context):
         return 0
     else:
         context.bot.sendMessage(chat_id=update.effective_chat.id,
-                                text=f"Searching for book `{bookName}` in database, please wait...")
+                                text=f"Searching for book `{bookName}` in database, please wait...",
+                                parse_mode="Markdown")
         data = libgen(bookName)
         if len(data) > 0:
             uuid = str(update.effective_chat.id) + str(update.effective_user.id)
@@ -126,7 +130,6 @@ def book_conv(update, context):
 
 
 def book_callback(update, context):
-    BOOKS = {}
     uuid = str(update.effective_chat.id) + str(update.effective_user.id)
     query = update.callback_query
     query.answer("loading")
