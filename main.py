@@ -193,13 +193,13 @@ def main() -> None:
     # everything goes above this
     # start/end bot
     # ------ System Polling ------
-    # updater.start_polling()
+    updater.start_polling() # switched from web to worker, for better uptime
     # ------ Heroku Webhook ------
-    PORT = int(os.environ.get("PORT", 5000))
-    URL = "https://libgen-book-bot.herokuapp.com/"
-    updater.start_webhook(listen="0.0.0.0",
-                          port=PORT,
-                          url_path=TOKEN, webhook_url=URL+TOKEN)
+    # PORT = int(os.environ.get("PORT", 5000))
+    # URL = "https://libgen-book-bot.herokuapp.com/"
+    # updater.start_webhook(listen="0.0.0.0",
+    #                       port=PORT,
+    #                       url_path=TOKEN, webhook_url=URL+TOKEN)
     updater.idle()
 
 
