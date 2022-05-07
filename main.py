@@ -60,7 +60,7 @@ def start(update, context):
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
         context.sendMessage(chat_id=MY_ID,
-        text=f"Start function used by {usr_id}")
+        text=f"Start function used by `{usr_id}`")
     context.bot.sendMessage(chat_id=update.effective_chat.id,
                             text=f"""
 Hey! To download a book use\n`/book` followed by the name of the book.
@@ -70,16 +70,14 @@ P.S: To read certain file types, download a book reader i.e., ReadEra, Moon+ Rea
                             parse_mode="Markdown")
 
 # book function: gets the name of the book and pass it to the scraper
-
-
 def book(update, context):
     # BOOKS = {}
     global BOOKS
     bookName = " ".join(context.args)
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
-        context.sendMessage(chat_id=MY_ID,
-        text=f"Start function used by {usr_id}")
+            context.sendMessage(chat_id=MY_ID,
+            text=f"`{usr_id}` searched for `{bookName}`")
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
@@ -109,16 +107,12 @@ def book(update, context):
             context.bot.sendMessage(chat_id=update.effective_chat.id,
                                     text="No book found.")
         return ConversationHandler.END
+
+
 # Conversation handler for the above function
-
-
 def book_conv(update, context):
     global BOOKS
     bookName = update.message.text
-    usr_id = update.effective_chat.id
-    if (usr_id != MY_ID):
-        context.sendMessage(chat_id=MY_ID,
-        text=f"Start function used by {usr_id}")
     if len(bookName) < 1:
         update.message.reply_text("Enter the name of the book: ",
                                   reply_markup=ForceReply(force_reply=True, selective=True))
@@ -174,7 +168,7 @@ def about(update, context):
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
         context.sendMessage(chat_id=MY_ID,
-        text=f"Start function used by {usr_id}")
+        text=f"About used by `{usr_id}`")
     context.bot.sendMessage(chat_id=update.effective_chat.id,
                             text=f"""This is a bot made by scraping the site libgen.rs
 For any queries or support contact @bhaskar_mahto""")
