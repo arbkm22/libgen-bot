@@ -141,9 +141,9 @@ def book_conv(update, context):
             context.bot.sendMessage(chat_id=update.effective_chat.id,
                                     text="No book found.")
         return ConversationHandler.END
+
+
 # callback funtion: required for pagination
-
-
 def book_callback(update, context):
     global BOOKS
     uuid = str(update.effective_chat.id) + str(update.effective_user.id)
