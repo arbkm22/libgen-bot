@@ -20,7 +20,9 @@ TOKEN = os.getenv("TOKEN")
 
 # heroku vars
 TOKEN = os.environ.get("TOKEN")
-MY_ID = os.environ.get("MY_ID")
+#MY_ID = os.environ.get("MY_ID")
+
+MY_ID = 448808617
 
 # ------ Global Variables ------
 BOOKS = {}
