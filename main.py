@@ -59,7 +59,7 @@ def transform(data):
 def start(update, context):
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
-        context.sendMessage(chat_id=MY_ID,
+        context.bot.sendMessage(chat_id=MY_ID,
         text=f"Start function used by `{usr_id}`")
     context.bot.sendMessage(chat_id=update.effective_chat.id,
                             text=f"""
@@ -76,7 +76,7 @@ def book(update, context):
     bookName = " ".join(context.args)
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
-            context.sendMessage(chat_id=MY_ID,
+            context.bot.sendMessage(chat_id=MY_ID,
             text=f"`{usr_id}` searched for `{bookName}`")
     # context.bot.sendMessage(chat_id=update.effective_chat.id, text=f"You entered {bookName}")
     if len(bookName) < 1:
@@ -167,7 +167,7 @@ def book_callback(update, context):
 def about(update, context):
     usr_id = update.effective_chat.id
     if (usr_id != MY_ID):
-        context.sendMessage(chat_id=MY_ID,
+        context.bot.sendMessage(chat_id=MY_ID,
         text=f"About used by `{usr_id}`")
     context.bot.sendMessage(chat_id=update.effective_chat.id,
                             text=f"""This is a bot made by scraping the site libgen.rs
